@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MoneyMind - Quản Lý Thu Chi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                50: 'hsl(var(--color-primary-50) / <alpha-value>)',
+                100: 'hsl(var(--color-primary-100) / <alpha-value>)',
+                200: 'hsl(var(--color-primary-200) / <alpha-value>)',
+                300: 'hsl(var(--color-primary-300) / <alpha-value>)',
+                400: 'hsl(var(--color-primary-400) / <alpha-value>)',
+                500: 'hsl(var(--color-primary-500) / <alpha-value>)',
+                600: 'hsl(var(--color-primary-600) / <alpha-value>)',
+                700: 'hsl(var(--color-primary-700) / <alpha-value>)',
+                800: 'hsl(var(--color-primary-800) / <alpha-value>)',
+                900: 'hsl(var(--color-primary-900) / <alpha-value>)',
+                950: 'hsl(var(--color-primary-950) / <alpha-value>)',
+              },
+            },
+          },
+        },
+      }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        /* Default Theme (Indigo-ish) as fallback */
+        --color-primary-50: 235 93% 97%;   /* #eef2ff */
+        --color-primary-100: 237 92% 95%;  /* #e0e7ff */
+        --color-primary-200: 236 89% 90%;  /* #c7d2fe */
+        --color-primary-300: 235 87% 83%;  /* #a5b4fc */
+        --color-primary-400: 236 86% 75%;  /* #818cf8 */
+        --color-primary-500: 238 82% 66%;  /* #6366f1 */
+        --color-primary-600: 243 75% 59%;  /* #4f46e5 */
+        --color-primary-700: 244 63% 51%;  /* #4338ca */
+        --color-primary-800: 243 57% 42%;  /* #3730a3 */
+        --color-primary-900: 242 53% 34%;  /* #312e81 */
+        --color-primary-950: 242 54% 21%;  /* #1e1b4b */
+      }
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #f3f4f6;
+      }
+      .dark body {
+        background-color: #111827;
+      }
+      /* Custom scrollbar for better aesthetics */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
+      .dark ::-webkit-scrollbar-track {
+        background: #1f2937;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+      }
+      .dark ::-webkit-scrollbar-thumb {
+        background: #4b5563;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+      }
+      .dark ::-webkit-scrollbar-thumb:hover {
+        background: #6b7280;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "@google/genai": "https://esm.sh/@google/genai@^1.33.0",
+    "react/": "https://esm.sh/react@^19.2.1/",
+    "react": "https://esm.sh/react@^19.2.1",
+    "react-markdown": "https://esm.sh/react-markdown@^10.1.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.1/",
+    "recharts": "https://esm.sh/recharts@^3.5.1",
+    "lucide-react": "https://esm.sh/lucide-react@^0.560.0"
+  }
+}
+</script>
+</head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>

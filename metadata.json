@@ -1,0 +1,7 @@
+{
+  "name": "MoneyMind",
+  "description": "Ứng dụng quản lý tài chính cá nhân thông minh với tích hợp AI để phân tích thói quen chi tiêu.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
