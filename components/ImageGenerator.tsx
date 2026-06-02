@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
 import { Image as ImageIcon, Loader2, Download, Sparkles, AlertCircle } from 'lucide-react';
-import { generateImageWithOpenAI } from '../services/openaiImageService';
+import { generateGoalImage } from '../services/geminiService';
 
 const ASPECT_RATIOS = [
   { label: '1:1', value: '1:1', desc: 'Vuông' },
   { label: '16:9', value: '16:9', desc: 'Ngang rộng' },
   { label: '9:16', value: '9:16', desc: 'Dọc' },
-];
-
-const QUALITY_OPTIONS = [
-  { value: 'standard', label: 'Standard', desc: 'Nhanh hơn' },
-  { value: 'hd', label: 'HD', desc: 'Chi tiết hơn' },
+  { label: '4:3', value: '4:3', desc: 'Ngang' },
+  { label: '3:4', value: '3:4', desc: 'Dọc' },
+  { label: '21:9', value: '21:9', desc: 'Siêu rộng' },
 ];
 
 const PROMPT_SUGGESTIONS = [
@@ -24,7 +22,6 @@ const PROMPT_SUGGESTIONS = [
 const ImageGenerator: React.FC = () => {
   const [prompt, setPrompt] = useState('');
   const [aspectRatio, setAspectRatio] = useState('1:1');
-  const [quality, setQuality] = useState<'standard' | 'hd'>('standard');
   const [isLoading, setIsLoading] = useState(false);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -37,18 +34,14 @@ const ImageGenerator: React.FC = () => {
     setGeneratedImage(null);
     setError(null);
 
-    const result = await generateImageWithOpenAI(prompt, aspectRatio, quality);
+    const result = await generateGoalImage(prompt, aspectRatio);
 
     if (result) {
       setGeneratedImage(result);
     } else {
-      setError('Không thể tạo ảnh. Vui lòng kiểm tra API key hoặc thử lại sau.');
+      setError('Không thể tạo ảnh. Vui lòng thử lại sau.');
     }
     setIsLoading(false);
-  };
-
-  const handleSuggestion = (suggestion: string) => {
-    setPrompt(suggestion);
   };
 
   return (
@@ -60,7 +53,7 @@ const ImageGenerator: React.FC = () => {
         </div>
         <div>
           <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">Tạo ảnh với AI</h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400">Powered by OpenAI DALL-E 3</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">Powered by Google Gemini</p>
         </div>
       </div>
 
@@ -92,7 +85,7 @@ const ImageGenerator: React.FC = () => {
                   <button
                     key={s}
                     type="button"
-                    onClick={() => handleSuggestion(s)}
+                    onClick={() => setPrompt(s)}
                     className="text-xs px-3 py-1.5 bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 rounded-full hover:bg-purple-100 dark:hover:bg-purple-900/40 border border-purple-200 dark:border-purple-700 transition-colors"
                   >
                     {s}
@@ -106,13 +99,13 @@ const ImageGenerator: React.FC = () => {
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Tỷ lệ khung hình
               </label>
-              <div className="flex gap-2">
+              <div className="grid grid-cols-3 gap-2">
                 {ASPECT_RATIOS.map((r) => (
                   <button
                     key={r.value}
                     type="button"
                     onClick={() => setAspectRatio(r.value)}
-                    className={`flex-1 py-2.5 px-3 rounded-xl text-sm font-medium border transition-all ${
+                    className={`py-2.5 px-3 rounded-xl text-sm font-medium border transition-all ${
                       aspectRatio === r.value
                         ? 'bg-purple-600 text-white border-purple-600 shadow-sm'
                         : 'bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-600 hover:border-purple-300'
@@ -120,30 +113,6 @@ const ImageGenerator: React.FC = () => {
                   >
                     <div className="font-bold">{r.label}</div>
                     <div className="text-[10px] opacity-70">{r.desc}</div>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Quality */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Chất lượng
-              </label>
-              <div className="flex gap-2">
-                {QUALITY_OPTIONS.map((q) => (
-                  <button
-                    key={q.value}
-                    type="button"
-                    onClick={() => setQuality(q.value as 'standard' | 'hd')}
-                    className={`flex-1 py-2.5 px-3 rounded-xl text-sm font-medium border transition-all ${
-                      quality === q.value
-                        ? 'bg-purple-600 text-white border-purple-600 shadow-sm'
-                        : 'bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-600 hover:border-purple-300'
-                    }`}
-                  >
-                    <div className="font-bold">{q.label}</div>
-                    <div className="text-[10px] opacity-70">{q.desc}</div>
                   </button>
                 ))}
               </div>
@@ -174,7 +143,7 @@ const ImageGenerator: React.FC = () => {
           {isLoading ? (
             <div className="text-center text-purple-600 dark:text-purple-400 p-6">
               <Loader2 className="w-12 h-12 animate-spin mx-auto mb-3" />
-              <p className="text-sm font-medium">DALL-E 3 đang sáng tạo...</p>
+              <p className="text-sm font-medium">Gemini đang sáng tạo...</p>
               <p className="text-xs text-gray-400 mt-1">Có thể mất 10-30 giây</p>
             </div>
           ) : error ? (
@@ -186,15 +155,13 @@ const ImageGenerator: React.FC = () => {
             <>
               <img
                 src={generatedImage}
-                alt="DALL-E Generated"
+                alt="Gemini Generated"
                 className="w-full h-full object-contain"
               />
-              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                 <a
                   href={generatedImage}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  download="dalle-image.png"
+                  download="gemini-image.png"
                   className="bg-white text-gray-900 px-4 py-2 rounded-lg font-medium flex items-center gap-2 hover:bg-gray-100 transition-colors text-sm"
                 >
                   <Download className="w-4 h-4" /> Tải về
