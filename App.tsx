@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Plus, LayoutDashboard, History, Wallet, Filter, AlertTriangle, LogOut, Calendar, ArrowRight, Landmark, PiggyBank, TrendingUp, TrendingDown, Minus, Info, Target, Settings } from 'lucide-react';
+import { Plus, LayoutDashboard, History, Wallet, Filter, AlertTriangle, LogOut, Calendar, ArrowRight, Landmark, PiggyBank, TrendingUp, TrendingDown, Minus, Info, Target, Settings, Image as ImageIcon } from 'lucide-react';
 import TransactionForm from './components/TransactionForm';
 import TransactionList from './components/TransactionList';
 import { ExpensePieChart, IncomePieChart } from './components/Charts';
 import AIAdvisor from './components/AIAdvisor';
 import AuthForm from './components/AuthForm';
 import ThemeSelector, { THEME_PRESETS } from './components/ThemeSelector';
+import ImageGenerator from './components/ImageGenerator';
 import { Transaction, TransactionType, User } from './types';
 import { getCurrentUser, logout } from './services/authService';
 
@@ -133,7 +134,7 @@ type FilterType = 'THIS_WEEK' | 'LAST_WEEK' | 'THIS_MONTH' | 'LAST_MONTH' | 'CUS
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'history'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'history' | 'image'>('dashboard');
   const [showAddModal, setShowAddModal] = useState(false);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   
@@ -550,11 +551,17 @@ function App() {
             >
               <LayoutDashboard className="w-5 h-5" /> Tổng quan
             </button>
-            <button 
+            <button
                onClick={() => setActiveTab('history')}
                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium ${activeTab === 'history' ? 'bg-primary-50 dark:bg-primary-900/40 text-primary-600 dark:text-primary-400' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'}`}
             >
               <History className="w-5 h-5" /> Lịch sử
+            </button>
+            <button
+               onClick={() => setActiveTab('image')}
+               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium ${activeTab === 'image' ? 'bg-primary-50 dark:bg-primary-900/40 text-primary-600 dark:text-primary-400' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'}`}
+            >
+              <ImageIcon className="w-5 h-5" /> Tạo ảnh AI
             </button>
           </nav>
 
@@ -772,6 +779,13 @@ function App() {
             </>
           )}
 
+          {activeTab === 'image' && (
+            <div className="pt-4 md:pt-0">
+              <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">Tạo ảnh với AI</h1>
+              <ImageGenerator />
+            </div>
+          )}
+
           {activeTab === 'history' && (
              <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm dark:shadow-none dark:border dark:border-gray-700 border border-gray-100 min-h-[80vh] transition-colors">
                 <div className="flex flex-col gap-4 mb-6">
@@ -822,20 +836,27 @@ function App() {
       </button>
 
       {/* Mobile Bottom Nav */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 px-6 py-3 flex justify-center gap-24 z-30 transition-colors">
-        <button 
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 px-6 py-3 flex justify-around z-30 transition-colors">
+        <button
             onClick={() => setActiveTab('dashboard')}
             className={`flex flex-col items-center gap-1 text-xs font-medium ${activeTab === 'dashboard' ? 'text-primary-600 dark:text-primary-400' : 'text-gray-400'}`}
         >
             <LayoutDashboard className="w-6 h-6" />
             Báo cáo
         </button>
-        <button 
+        <button
              onClick={() => setActiveTab('history')}
             className={`flex flex-col items-center gap-1 text-xs font-medium ${activeTab === 'history' ? 'text-primary-600 dark:text-primary-400' : 'text-gray-400'}`}
         >
             <History className="w-6 h-6" />
             Lịch sử
+        </button>
+        <button
+             onClick={() => setActiveTab('image')}
+            className={`flex flex-col items-center gap-1 text-xs font-medium ${activeTab === 'image' ? 'text-primary-600 dark:text-primary-400' : 'text-gray-400'}`}
+        >
+            <ImageIcon className="w-6 h-6" />
+            Tạo ảnh
         </button>
       </div>
 
