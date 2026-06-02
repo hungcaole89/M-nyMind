@@ -1,7 +1,11 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { Transaction, TransactionType, Category } from "../types";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+let _ai: GoogleGenAI | null = null;
+const getAI = () => {
+  if (!_ai) _ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+  return _ai;
+};
 
 export const getFinancialAdvice = async (transactions: Transaction[]): Promise<string> => {
   if (transactions.length === 0) {
@@ -26,7 +30,7 @@ export const getFinancialAdvice = async (transactions: Transaction[]): Promise<s
   `;
 
   try {
-    const response = await ai.models.generateContent({
+    const response = await getAI().models.generateContent({
       model: "gemini-2.5-flash",
       contents: prompt,
     });
@@ -41,7 +45,7 @@ export const suggestCategory = async (note: string): Promise<string | null> => {
   if (!note || note.length < 3) return null;
 
   try {
-    const response = await ai.models.generateContent({
+    const response = await getAI().models.generateContent({
         model: "gemini-2.5-flash",
         contents: `Phân loại ngắn gọn giao dịch này vào 1 trong các mục sau: 'Ăn uống', 'Di chuyển', 'Mua sắm', 'Hóa đơn', 'Giải trí', 'Sức khỏe', 'Giáo dục', 'Lương', 'Thưởng', 'Đầu tư', 'Quà tặng', 'Khác'. Chỉ trả về tên danh mục, không giải thích. Giao dịch: "${note}"`,
     });
@@ -57,7 +61,7 @@ export const analyzeReceipt = async (base64Image: string): Promise<{ amount?: nu
     // Remove header if present (e.g., "data:image/jpeg;base64,")
     const cleanBase64 = base64Image.split(',')[1] || base64Image;
 
-    const response = await ai.models.generateContent({
+    const response = await getAI().models.generateContent({
       model: "gemini-3-pro-preview",
       contents: {
         parts: [
@@ -88,7 +92,7 @@ export const analyzeReceipt = async (base64Image: string): Promise<{ amount?: nu
 
 export const generateGoalImage = async (prompt: string, aspectRatio: string): Promise<string | null> => {
   try {
-    const response = await ai.models.generateContent({
+    const response = await getAI().models.generateContent({
       model: 'gemini-3-pro-image-preview',
       contents: {
         parts: [
